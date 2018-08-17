@@ -1,0 +1,26 @@
+Tipos de Interrelacion
+- Unario (Interrelacion de un conjunto consigo mismo)
+- Binario (Interrelacion entre dos conjuntos)
+- Ternario
+
+Tipos de Cardinalidad
+
+Rectangulo: Conjunto de entidades -- Rotulos: SUSTANTIVOS EN SINGULAR
+Rombo: Conjunto de interrelaciones. Rotulos: VERBOS SEGUIDOS DE PROPOSICIONES
+
+En los diagramas de interrelacion no existe izquierda o derecha
+
+Atributo Discriminante: Es un atributo necesario pero no suficiente para identeificar un elemento de un conjunto. Para que sea completo necesita la ID de la entidad de la cual depende. Es una dependencia existencial, ya que, en el caso del Movimiento, por más que tenga un Id de movimiento, depende del ID de la cuenta corriente a la que pertenece, para existir.
+
+La doble linea marca cual es la entidad debil (MARCADO EN ROJO EN EL CUADERNO).
+
+En la entidad DÉBIL existe el atributo ID de la entidad FUERTE a la que pertenece, NO PUEDE FALTAR EN LA BASE DE DATO (FOREGIN KEY). En el DER es un atributo que esta IMPLICITO, no hace falta ponerlo en el diagrama (Si se pone está MAL).
+
+Si el desarrollador descubre que varias entidades comparten caracteristicas, y crea una entidad de jerarquia superior se llama GENERALIZACIÓN. En cambio si lo que descubre es que una entidad puede separarse en entidades más especificas, se llama ESPECIALIZACION. (HERENCIA) Las entidades de menor jerarquia heredan las interrelaciones y los atributos de la de mayor querarquia.
+
+
+Interrelaciones TERNARIAS
+
+De los pares surgen las cardinalidades. En el caso del 1:1:1 un par fabrica-provedor solo puede comprar un solo tipo de insumo, un par provedor-insumo solo puede ser vendido a una sola fabrica.
+
+Una restriccion TERNARIA no impone una reestriccion BINARIA. (Ejemplo 1:1:1 en el cuaderno)
