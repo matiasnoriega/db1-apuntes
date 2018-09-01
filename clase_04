@@ -1,0 +1,16 @@
+El mapeo de modelos dependede la cardinalidad de la interrelacion
+
+NULL es "valor desconocido", no tiene valor. Es recomendable no tener Foreign Keys con valores nulos. Porque despues los querys se empiezan a complicar.    
+
+Que se llamen distinto no quiere decir que no sean iguales. Si una Foreign Key se llama Codigo_Pais en PAISES y Codigo_Pais_1 en LIMITA_CON, son lo mismo a pesar de no tener el mismo nombre. EN LA MEDIDA DE LO POSIBLE SE LLAMAN IGUAL   
+
+En una relacion N a N, ambos FK de la tabla auxiliar son PK
+
+(Diagrama Modelo Relacional) DMR
+
+---
+
+Taller 2
+
+NO ACTION por defecto
+

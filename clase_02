@@ -24,3 +24,8 @@ Interrelaciones TERNARIAS
 De los pares surgen las cardinalidades. En el caso del 1:1:1 un par fabrica-provedor solo puede comprar un solo tipo de insumo, un par provedor-insumo solo puede ser vendido a una sola fabrica.
 
 Una restriccion TERNARIA no impone una reestriccion BINARIA. (Ejemplo 1:1:1 en el cuaderno)
+
+INTERRELACION DE INCLUSIÓN: Un conjunto debe estar incluido dentro del otro
+
+
+Si el dato depende del par, entonces es un atributo de la relación. Por ejemplo en el caso de Articulo y Sucursal, si el precio es el mismo en todas las sucursales, el atributo precio es de Articulo. Sin embargo, si el precio depende del articulo y en que sucursal se vende, el atributo se encuentra en la relacion (vende)
