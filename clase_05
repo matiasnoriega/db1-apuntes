@@ -1,0 +1,38 @@
+C1) Listar las localidades donde viven los alumnos
+
+En un conjunto no puede haber elementos repetidos, por lo tanto si aparece mas de una vez una 
+
+C2) Obtener una lista de alumnos y la localidad donde viven
+
+Seleccionar segun Thetha de la expresión E
+
+Un atomo es una expresión de forma:
+constante  operador de comparación  atributo
+atributo_1 operador de comparacion atributo_2
+
+Thetha es un conjunto de atomos unidos por operadores lógicos
+
+C3) Obtener los alumnos con nombre y apellido que viven en Merlo
+
+C4) Listar los alumnos que cursan ingenieria Informática y viven en Merlo
+
+C5) Obtener las localidades donde no tengamos alumnos de ingenieria electronica
+
+Propiedad Union-Compatibilidad: Las expresiones que voy a interceptar, unir, o restar tienen que tener la misma cantidad de columnas y las columnas deben estar definidas sobre los mismos dominios
+
+C6) Obtener los alumnos con libreta universitaria y nombre que no vivan en Merlo
+
+C7) Obtener las localidades donde vivan alumnos de la carrera Ingenieria Electronica (IE) ó de la carrera Ingeniería Informática (II)
+
+eL OPERADOR or DE LA TEORIA DE PREDICADOS ES ANALOGO AL OPERADOR UNION DE LA TEORIA DE CONJUNTOS
+
+C8) Obtener las localidades donde vivan alumnos de la carrera Ingenieria Electronica e Ingenieria Informática
+
+C9) Obtener todos los pares localidad-cod_carrera tal que sus significados sean que en tal localidad no hay alumnos de tal carrera
+
+C10) Obtener las localidades donde vivan alumnos de todas las carreras
+
+
+Fabricas que entregaron MAS de un articulo al proveedor 8
+
+al hacer producto cartesiano es mas eifciente usar MAYOR o MENOR en lugar de NO ES IGUAL, ya que como hay 2 filas que van a ser gemelas (inversas) ambas son NO IGUAL, pero una siempre va a ser mayor que la otra
