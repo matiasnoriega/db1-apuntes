@@ -1,0 +1,1 @@
+ILIKE es solo de postgresql, usar LIKE. Lo que hace es poner el atributo en mayusculas
