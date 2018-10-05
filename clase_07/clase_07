@@ -1,0 +1,79 @@
+el foreing key es un constraint que chequea que el valor que estemos asignando, exista en la tabla principal.
+
+El orden de la primary key puede tener importancia, dependiendo de a cual se llama. Se pueden generar tambien indices alternativos.
+
+Para borrar columnas, se deben bajar los datos a un secuencial insert, borrar la tabla, y crearla como corresponde.
+
+TRANSACTION: Es un conjunto de sentencias que se van a ejecutar, todas o ninguna.
+
+BEGIN TRANSACTION;
+INSERT 
+ALTER
+INSERT
+INSERT
+COMMIT; <---Comitea todas las acciones de la TRANSACTION, de haber algún error, hace un rollback al principio, antes de comenzar la transaccion.
+
+AL TRABAJAR EN POSTGRES SETEAR LOS DATOS DEL TIPO FECHA SET datastyle = iso;
+
+DISTINCT hace que la combinacion de dos campos iguales, aparezca una solavez. Por ejemplo, un alumno que rindio vairos finales, solo mostrará uno.
+La funcion DISTINCT no es algo eficiente para la DB.
+
+IN (1001, 1002, 1003)
+
+En la clausula WHERE va a traer los resultaods que tengan los valores 1001, 1002, o 1003. Tambien se puede hacer NOT IN
+
+LEFT(Nom, 1) <-- toma los X primeros caracteres de la izquierda. RIGHT lo mismo
+
+PRODUCTO CARTESIANO:
+SELECT f1.leg, f1.mat, f1. nota, f2.leg, f2.mat, f2.nota
+    FROM finales f1, finales f2
+        ORDER BY f1.leg;
+
+SELECT f1.leg, f1.mat, f1. nota, f2.leg, f2.mat, f2.nota
+    FROM finales f1, finales f2
+        WHERE f1.leg = f2.leg
+        AND f1.nota > f2.nota
+        AND f1.nota >= 4
+        AND f2.nota >= 4
+        ORDER BY f1.leg;
+
+SELECT f.* m.* FROM finales f, Materias m, Alumnos acciones
+    WHERE f.mat = m.mat
+    AND f.leg = a.leg
+    AND fec BETWEEN '2008-12-01' AND '2009-03-30';
+
+(Es lo mismo que el producto CARTESIANO)
+SELECT f.* m.* FROM finales f INNER JOIN Materias m ON f.mat = m.mat
+    WHERE FEC BETWEEN '2008-12-01' AND '2009-03-30'
+        ORDER BY f.leg;
+
+SELECT f.*, nombre, nom, aparezca
+    FROM finales f INNER JOIN materias m ON f.mat = m.mat
+        INNER JOIN alumnos a ON f.leg = a.leg
+            WHERE fec BETWEEN '2008-12-01' AND '2009-03-30';
+
+listar todos los cursos con sus correspondientes alumnos inscriptos
+
+SELECT * from cursos C INNER JOIN inscripciones I
+                        ON c.mat = i.mat AND c.anio = i.anio
+                        ORDER BY c.mat, c.anio;
+
+
+SELECT * FROM finales
+    WHERE nota < 4
+    ORDER BY leg
+
+
+Toda el algebra relacional devuelve CONJUNTOS 
+
+SELECT * FROM finales f1
+    WHERE LEG IN (SELECT LEG FROM FINALES f2 
+        WHERE NOTA >= 4 AND f1.leg = f2.leg) (SELECT CORRELACIONADO)
+        ORDER BY leg;
+
+SELECT * FROM finales f1
+    WHERE NOT EXISTS (SELECT LEG FROM FINALES f2 
+        WHERE NOTA >= 4 AND f1.leg = f2.leg) (SELECT CORRELACIONADO)
+        ORDER BY leg;
+
+Con el NOT EXISTS, se puede llegar a ser mas eficiente porque no necesita recorrer toda la base de datos para certifiar el resultado, donde encuentra UN solo resultado deja de recorrerla y arroja false,
