@@ -1,0 +1,6 @@
+﻿drop table if exists fabrica;
+drop table if exists clientes;
+create table clientes (cuit integer,nombre varchar (20),saldo integer,localidad varchar(20));
+insert into clientes values(10,'juan',20,null),(20,'pablo',40,null),(30,'ana',null,'MDQ');
+create table fabrica (cuit varchar(2) ,letra char , localidad varchar (20));
+	insert into fabrica values (40,'x','MDQ'),(20,'j',null);

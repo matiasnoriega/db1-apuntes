@@ -1,0 +1,97 @@
+SELECT COUNT(*), AVG(nota), MIN(nota), MAX(nota), SUM(nota)
+    FROM finales
+        WHERE mat = 1003 AND date_part('year', fec) = 2008;
+
+HAVING es un WHERE para usar luego de la clausula GROUP BY, allí se opera sobre las funciones, o sobre los campos del GROUP BY. Acepta una condicion, como en un IF, que de verdadero o falso.
+
+SELECT mat, COUNT(*) as CANTIDAD_FINALES, ROUND(AVG(nota),2), MIN(nota), MAX(nota), SUM(nota) 
+    FROM finales
+        WHERE date_part('year', fec) = 2008 GROUP BY mat HAVING COUNT(*) > 3 AND ROUND(AVG(nota),2) > 4;
+El GROUP BY controla lo que tiene el campo "fijo".
+
+
+SELECT mat, COUNT(*) as CANTIDAD_FINALES, ROUND(AVG(nota),2) as PROMEDIO, MIN(nota), MAX(nota), SUM(nota)
+    FROM finales
+        WHERE date_part('year', fec) = 2008 GROUP BY mat HAVING COUNT(*) > 3 AND ROUND(AVG(nota),2) > 4 ORDER BY PROMEDIO ASC, 1 DESC;
+
+SELECT mat, COUNT(*) as CANTIDAD_FINALES, ROUND(AVG(nota),2) as PROMEDIO, MIN(nota), MAX(nota), SUM(nota)
+    FROM finales
+        WHERE date_part('year', fec) = 2008 GROUP BY mat HAVING COUNT(*) > 3 AND ROUND(AVG(nota),2) > 4 ORDER BY PROMEDIO ASC, 1 DESC;
+
+En algunos lugares toma el ALIAS, en otros no. En el HAVING no funciona, en el ORDER BY si.
+
+
+SELECT m.nombre, date_part('year',f.fec), COUNT(*) as CANTIDAD_FINALES, ROUND(AVG(nota),2) as PROMEDIO, MIN(nota), MAX(nota), SUM(nota)
+    FROM finales f INNER JOIN materias m ON f.mat = m.mat
+        GROUP BY m.nombre, date_part('year',f.fec) HAVING COUNT(*) > 3 AND ROUND(AVG(nota),2) > 4 ORDER BY PROMEDIO ASC, 1 DESC;
+
+SELECT m.nombre, date_part('year',f.fec) as ANIO, COUNT(*) as CANTIDAD_FINALES, ROUND(AVG(nota),2) as PROMEDIO, MIN(nota), MAX(nota), SUM(nota)
+    FROM finales f INNER JOIN materias m ON f.mat = m.mat
+        GROUP BY m.nombre, ANIO HAVING COUNT(*) > 3 AND ROUND(AVG(nota),2) > 4 ORDER BY PROMEDIO ASC, 1 DESC;
+
+    SELECT * FROM finales f1 
+        FULL JOIN alumnos a ON f1.leg = a.leg
+            FULL JOIN carreras c ON a.id_carr = c.id
+                WHERE ;
+
+SELECT f1.*, a.nom, a.ape, c.nom 
+	FROM finales f1, alumnos a, carreras c
+		WHERE f1.leg = a.leg 
+		AND a.id_carr = c.id
+		AND f1.mat IN (SELECT mat FROM materias WHERE nombre LIKE '%BD%')
+		AND nota > (SELECT ROUND(AVG(nota),2) FROM finales WHERE date_part('year', fec) = 2009)
+		;
+
+
+SELECT date_part()
+
+
+SELECT 
+SELECT f1.*, a.nom, a.ape, c.nom 
+	FROM finales f1, alumnos a, carreras c
+		WHERE f1.leg = a.leg 
+		AND a.id_carr = c.id
+		AND f1.mat IN (SELECT mat FROM materias WHERE nombre LIKE '%BD%')
+		AND nota > (SELECT ROUND(AVG(nota),2) FROM finales WHERE date_part('year', fec) = 2009)
+		;
+
+SELECT f.*, date_part('year',f.fec) as anio, COUNT(*) as CANTIDAD_FINALES, ROUND(AVG(nota),2) as PROMEDIO, MIN(nota), MAX(nota), SUM(nota)
+    FROM finales f, materias m 
+		GROUP BY f.mat, m.nombre, anio
+		HAVING ROUND(AVG(nota),2) > (SELECT AVG(nota) FROM finales WHERE date_part('year', fec) = 2008 AND mat = 1001)
+			AND COUNT(*) > (SELECT count(*) FROM finales WHERE date_part('year', fec) = 2009 AND mat = 1002);
+			
+SELECT m.nombre, COUNT(*) as CANTIDAD_FINALES, ROUND(AVG(nota),2) as PROMEDIO, MIN(nota), MAX(nota), SUM(nota)
+	FROM finales f FULL JOIN materias m
+		ON f.mat = m.mat
+		GROUP BY f.fec, m.nombre
+		HAVING ROUND(AVG(nota),2) > (SELECT AVG(nota) FROM finales WHERE date_part('year', fec) = 2008 AND mat = 1001)
+			AND COUNT(*) > (SELECT count(*) FROM finales WHERE date_part('year', fec) = 2009 AND mat = 1002);
+
+
+LISTAR LOS FINALES DE LAS MATERIAS DE VASE DE DATOS CUYAS NOTAS SEAN MAYOR AL PROMEDIO DE LAS NOTAS DEL AÑO 2008 DE DICHO ALUMNO.
+
+SELECT f1.* FROM finales f1, materias m
+	WHERE f1.mat = m.mat
+		AND m.nombre LIKE '%BD%'
+		AND f1.nota > (SELECT AVG(f2.nota) FROM finales f2 WHERE date_part('year', f2.fec) = 2008 AND f1.leg = f2.leg);
+
+
+SELECT * FROM alumnos a, carreras c
+	WHERE a.id_carr = c.id
+		AND c.nom ILIKE 'aboga%'
+		AND NOT EXISTS( SELECT 1 FROM finales f
+					  		WHERE f.leg = a.leg
+					  			AND date_part('year', f.fec) = 2009);
+
+
+
+SELECT a.* FROM alumnos a
+    WHERE (SELECT count(leg) FROM finales f 
+		   			WHERE date_part('year', fec) = 2008 
+		   				AND f.leg = a.leg) >= 4;
+	
+<ALL <--- Cuando comparamos un valor con un conjunto OPERADORES DE CONJUNTO
+
+
+COMANDO COPY: S epiuede copiar un CSV a una tabla

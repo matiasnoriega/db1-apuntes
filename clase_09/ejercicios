@@ -1,0 +1,42 @@
+﻿--select   sum(saldo) from clientes; ana tiene 0 de saldo
+--select   avg(saldo) from clientes; ana tiene 30 de saldo en promedio
+--ignorar un valor null no soluciona  el problema 
+-- ejercicio 6--
+--select  max(saldo) from clientes;
+--select min(saldo) from clientes;
+--punto 2--
+--select * from clientes
+--order by saldo desc;
+--si hay muchos null mostratara todos los nulls primeros
+--punto 3
+select * from clientes 
+where localidad ilike 'mdq';
+
+--un valor null nunca da verdadero , el where selecciona las duplas que dan  verdadero
+--localidad is null para que nos ede el universo en el ejercicio 4
+--esto es un or , in es un or para cada uno de los valores en los subconjuntos
+select * 
+from clientes 
+where saldo not in (10,20);
+--el valor null nunca dara valor verdadero en el where , nisiquiera cunado comparo null con null
+select * 
+from clientes 
+where saldo in (10,20);
+--6---
+--dio solo las que no tienen MDQ en localidad por mas que tenga valores null
+select * from clientes c
+where not exists (select * from fabrica f where c.localidad=f.localidad);
+--da tabla vacia por que no sabemos que hay en la otra tabla al ser null--
+select * from clientes c
+where localidad not in (select localidad from fabrica f);
+--el not in y el in es el or
+--obtener los clientes que no sean vecinos a una fabrica ,logica de los tres valores , verdadero , falso y nulo ,las tablas de dos valores deja de funcionar y la de tres valores usa
+--otra 3 valores , hacer las tablas con 3 valores para los operadores , and , or y not --
+--la tautologia siempre da verdadero pero tambien puede dar falsa
+delete from fabrica where cuit ilike '40';
+--el cuit de todas los clientes junto con los cuit de las fabricas -- 
+select c.cuit,f.cuit
+from clientes c , fabrica f
+	where c.localidad <> f.localidad
+	or f.localidad not ilike 'mdq';
+

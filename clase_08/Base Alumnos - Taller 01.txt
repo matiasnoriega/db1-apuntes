@@ -1,0 +1,394 @@
+-- +-------------------------------------------------------------------+
+-- |              Base de datos de la Universidad                      |
+-- +-------------------------------------------------------------------+
+--
+--
+-- Modelo Relacional de la base de datos DBFacu:
+--   - CARRERAS     (*Id,Nombre)
+--   - ALUMNOS	    (*Leg, Nom, Ape, id_carr)
+--   - MATERIAS	    (*Mat, Nombre) 
+--   - FINALES	    (*Fec, *Mat, *Leg, Nota)
+--   - Profesores   (*Prof,NyA)
+--   - Cursos       (*Mat, Prof, *Anio)
+--   - Inscripciones(*Mat, *Anio, *Leg)
+--
+------------------------------------------------------------------------------
+--
+-- Objetivo de la clase: - Sentencia "Create Table"
+--                       - Select basicos (Like, Beetween, In, Order by)
+--                       - LEFT + RIGHT + FULL JOIN 
+--                       - Not IN + Not Exists
+--
+------------------------------------------------------------------------------
+--
+-- CREAR LA TABLA CARRERAS(*ID,NOM)
+--   -> Id es un char de 4 bytes y > ' '
+--   -> NOM es de 40 caracteres como maximo
+--
+--
+Create table carreras 
+(id     char(4) primary key,
+ nom    varchar(40),
+CONSTRAINT CHK_Carreras_id CHECK (id > ' '));
+--
+-- CREAR LA TABLA MATERIAS(*MAT,NOMBRE)
+--   -> mat > 0
+--
+--
+Create table materias 
+(mat    integer primary key check (mat > 0),
+ nombre varchar(20));
+--
+-- Podemos indicar la Primary Key despues de crear una tabla?
+--
+Drop Table materias;
+--
+--
+Create table materias 
+(mat    integer,
+ nombre varchar(20),
+CONSTRAINT CHK_Materias_mat CHECK (mat >  0));
+--
+ALTER TABLE materias ADD CONSTRAINT Pk_Materias PRIMARY KEY(mat);
+--
+-- 
+-- CREAR LA TABLA ALUMNOS(*LEG,NOM,APE,CUOTA,MATR,ID_CARR)
+--   -> legajo > 50
+--   -> valor default para apellido = 'Desconocido'
+--   -> Indicar FKs
+--   -> ASIGNAR LAS OPCIONES ON UPDATE + ON DELETE
+--      (Cascade, Set Null, Set Default, No Action)
+--
+--
+Create table alumnos 
+(leg    int,
+ nom    varchar(20),
+ ape    varchar(20) not null default 'Desconocido',
+ cuota  decimal(9,2),
+ matr   decimal(9,2),
+ id_carr char(4) );
+--
+ALTER TABLE Alumnos ADD CONSTRAINT Pk_Alumnos PRIMARY KEY(leg);
+ALTER TABLE Alumnos ADD CONSTRAINT CHK_Materias_mat CHECK (mat > 50);
+ALTER TABLE Alumnos ADD CONSTRAINT FK_Alumnos_id_carr FOREIGN KEY (id_carr)
+            REFERENCES carreras  ON UPDATE CASCADE ON DELETE CASCADE;
+--
+--
+--ALTER TABLE Alumnos ADD CONSTRAINT FK_Alumnos_id_carr FOREIGN KEY (id_carr)
+--            REFERENCES carreras  ON UPDATE no action ON DELETE set default;
+--
+--
+-- CREAR LA TABLA FINALES(*FEC,*MAT(FK),*LEG(FK),NOTA) 
+-- CONSIDERAR:
+--   -> VALIDAR NOTAS
+--   -> VALIDAR FECHA >= A 1-ENE-2000
+--   -> Indicar FKs
+--   -> ASIGNAR LAS OPCIONES ON UPDATE + ON DELETE
+--       
+--
+Create table finales 
+(fec    date,
+ mat    int,
+ leg    int,
+-- nota   int CHECK (nota >= 0 AND nota <= 10),
+ nota   int,
+ CONSTRAINT CHK_NOTA  CHECK (nota >=0 AND nota <= 10),
+ CONSTRAINT CHK_FECHA CHECK (fec >= '2000-01-01'),
+ PRIMARY KEY (fec, mat, leg),
+ FOREIGN KEY (mat) REFERENCES materias ON UPDATE CASCADE ON DELETE NO ACTION,
+ FOREIGN KEY (leg) REFERENCES alumnos  ON UPDATE CASCADE ON DELETE CASCADE);
+--
+------
+---------------------- F  I  N   -  C R E A T E   T A B L E ------------
+------------------------------------------------------------------------------
+--
+-- ejecutar para poblar las tablas "$Alumnos - Script.txt"
+--
+------------------------------------------------------------------------------
+--  Introduccion SELECT
+------------------------------------------------------------------------------
+--
+Select Fec, Mat, Leg, Nota From FINALES;
+--
+--
+--
+Select * From FINALES;
+--
+--
+--
+Select Fec, Mat, Leg, Nota From FINALES Where Mat = 1003;
+--
+-- formato de las variables fecha
+--
+set datestyle = iso  ;
+--
+--
+--
+Select Fec, Mat, Leg, Nota From FINALES Where Mat = 1003 And Fec = '2008/12/13';
+Select Fec, Mat, Leg, Nota From FINALES Where Mat = 1003 Or  Fec = '2008/12/13';
+--
+--
+--
+Select Fec, Mat, Leg, Nota * 10, Nota From FINALES Where Mat = 1003;
+--
+--
+--
+Select Leg, Nom, Ape From Alumnos Where Nom = 'Juan';
+--
+-- Between
+--
+Select Mat, Leg From FINALES Where Mat = 1003
+            And Fec Between '2008/06/01' AND '2009/03/30';
+
+--
+-- Distinct
+--
+Select DISTINCT Mat, Leg From FINALES Where Mat = 1003
+                And Fec Between '2008/06/01' AND '2009/03/30'; 
+--
+-- Like
+--
+select * from alumnos;
+Select Leg, Nom, Ape From Alumnos Where Ape Like '___ez';
+--
+--
+select * from alumnos;
+Select Leg, Nom, Ape From Alumnos Where Ape Like '_o%ez';
+--
+--
+select * from alumnos;
+Select Leg, Nom, Ape From Alumnos Where Nom Like '%Pablo%';
+--
+-- Resumen
+--
+select * from alumnos;
+Select Leg, Nom, Ape From Alumnos Where Ape Like '___ez';
+Select Leg, Nom, Ape From Alumnos Where Ape Like '_o%ez';
+Select Leg, Nom, Ape From Alumnos Where Nom Like '%Pablo%';
+--
+--
+--
+-- In
+--
+Select Fec, Mat, Leg From FINALES Where Mat In (1001, 1002, 1003);
+Select Fec, Mat, Leg From FINALES Where Mat Not In (1001, 1002, 1003);
+
+--
+-- Funciones Year, Left, Right, Substring
+--
+Select date_part('year',Fec), Fec, Mat, Leg From FINALES 
+ Where date_part('year',Fec) = 2008
+--
+--
+Select Leg, Left(Nom,1), Nom, Right(Ape,2), SubString(Ape,2,3), Ape 
+  From Alumnos 
+  Where left(Nom,1) = 'J' 
+     or right(Ape,2) = 'ez'
+     or SubString(Ape,2,3) = 'art'
+--
+--
+--   NULL
+--
+-- Listar los alumnos que tienen sin informar (NULL) el valor de la cuota
+--
+Select * From Alumnos;
+--
+--
+Select * From Alumnos where cuota is null;
+--
+-- y al reves? (todos los que SI tienen informado un valor de cuota)
+--
+--
+Select * From Alumnos where cuota is not null;
+--
+-------------------------------------------------------------------------
+--
+
+--   Order by
+
+--
+
+--
+-- Listar todos los FINALES del año 2008 ordenados por fecha, materia
+-- y legajo
+
+--
+
+--
+
+Select date_part('year',Fec), Fec, Mat, Leg 
+ From  FINALES Where date_part('year',Fec) = 2008
+ order by Fec, Mat, Leg;
+--
+
+-- ...y si queremos ordenar Descendente x Fec y Ascendente x Mat y Leg?
+
+--
+
+--
+
+Select date_part('year',Fec), Fec, Mat, Leg 
+ From  FINALES Where date_part('year',Fec) = 2008
+ order by Fec DESC, Mat ASC, Leg ASC;
+--
+
+-- .... otras alternativas!!!
+
+--
+
+-- el ASC es optativo
+
+--
+Select date_part('year',Fec), Fec, Mat, Leg 
+ From  FINALES Where date_part('year',Fec) = 2008
+ order by Fec DESC, Mat, Leg;
+--
+
+--------------------------------------------------------------------------------
+-- Como hacemos un producto cartesiano MAS una seleccion?
+--
+-- Alumnos que tienen mas de un final aprobado?
+--
+--
+Select f1.leg, f1.mat, f1.nota, f2.leg, f2.mat, f2.nota
+ From  Finales f1, Finales f2
+ Order by f1.leg;
+--
+-- y entonces?
+--
+--
+Select f1.leg, f1.mat, f1.nota, f2.leg, f2.mat, f2.nota
+ From  Finales f1, Finales f2
+ Where f1.leg = f2.leg
+   And f1.mat > f2.mat
+   And f1.nota >= 4
+   And f2.nota >= 4
+ Order by f1.leg;
+--
+--
+-- Join (Producto cartesiano + Seleccion)
+--
+--
+Select f.*, m.* From Finales f, Materias m
+ Where f.mat = m.mat
+   And Fec Between '2008/12/01' AND '2009/03/30'
+ Order by f.leg;
+--
+-- Join con Inner Join
+--
+Select f.*, m.* From Finales f Inner Join Materias m On f.mat = m.mat
+                  Where Fec Between '2008/12/01' AND '2009/03/30'
+ Order by f.leg;
+--
+-- Join con mas de 2 tablas
+--
+Select f.*, nombre, nom, ape From Finales f, Materias m, Alumnos a
+                  Where f.mat = m.mat
+                    And f.leg = a.leg
+                    And Fec Between '2008/12/01' AND '2009/03/30'
+ Order by f.leg;
+--
+--
+--
+Select f.*, nombre, nom, ape
+ From  Finales f Inner Join Materias m On f.mat = m.mat
+                 Inner Join Alumnos a  On f.leg = a.leg
+ Where Fec Between '2008/12/01' AND '2009/03/30';
+--
+--
+-- Listar todos cursos con sus correspondientes alumnos inscriptos
+--
+--
+Select * From Cursos C Inner Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+-- Listar todos cursos con sus correspondientes alumnos inscriptos
+-- (Incluir los Cursos sin alumnos)
+--
+Select * From Cursos;
+Select * From Cursos C Inner Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+--
+Select * From Cursos C Left Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+--
+-- Listar todos cursos con sus correspondientes alumnos inscriptos
+-- (Incluir los alumnos inscriptos en cursos que no existen)
+--
+Select * From Inscripciones;
+Select * From Cursos C Inner Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+--
+-- Y si hay cursos sin alumnos?
+--
+Select * From Cursos C Left Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+-- Y si hay alumnos en Cursos que no existen?
+--
+Select * From Cursos C Right Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+-- Listar todos cursos con sus correspondientes alumnos inscriptos
+-- (Incluir todos los Cursos y todas las inscripciones)
+--
+Select * From Cursos;
+Select * From Inscripciones;
+Select * From Cursos C Inner Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+--
+Select * From Cursos C Full Join Inscripciones I
+                       On C.Mat = I.Mat And C.Anio = I.Anio
+ Order by c.mat, c.anio;
+--
+--
+-------------------------------------------------------------------------
+--      Not In - Not Exists
+--
+--
+--   Alumnos que no aprobaron ninguna materia
+--
+Select * From Alumnos A, Finales F
+ where a.leg = f.leg
+--
+-- podemos ver que el legajo 138 tiene aplazos
+--
+Select * From Alumnos A, Finales F
+ where a.leg = f.leg
+   and nota >= 4;
+--
+-- Entonces?
+--
+Select * From Alumnos A, Finales F
+ where a.leg = f.leg
+   and f.leg not in (select leg from finales where nota < 4);
+--
+-- y no aparece el legajo 138
+--
+-- otra opcion - correlacionados (mas eficiente?)
+--
+Select * From Alumnos A, Finales F
+ where a.leg = f.leg
+   and f.leg not in (select leg from finales ff where ff.leg = f.leg and nota < 4);
+--
+-- NOT EXISTS
+--
+Select * From Alumnos A, Finales F
+ where a.leg = f.leg
+   and NOT EXISTS (select leg from finales ff where ff.leg = f.leg and nota < 4);
+--
+--
+-------------------------------------------------------------------------
+--------------------------------------------------------------------
+
