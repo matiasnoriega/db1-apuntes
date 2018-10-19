@@ -62,7 +62,7 @@ ALTER TABLE materias ADD CONSTRAINT Pk_Materias PRIMARY KEY(mat);
 --   -> valor default para apellido = 'Desconocido'
 --   -> Indicar FKs
 --   -> ASIGNAR LAS OPCIONES ON UPDATE + ON DELETE
---      (Cascade, Set Null, Set Default ó No Action)
+--      (Cascade, Set Null, Set Default ï¿½ No Action)
 --
 --
 Create table alumnos 

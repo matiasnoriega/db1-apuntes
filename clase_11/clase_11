@@ -1,0 +1,61 @@
+SELECT c.nrocli, c.nyape, count(f.nrofactura) FROM 
+                facturas f INNER JOIN clientes c ON c.nrocli = f.cliente
+                    INNER JOIN detalles d ON f.nrofactura = d.nrofactura
+                    INNER JOIN articulos a ON d.articulo = a.nroartic
+                        WHERE f.fecha >= '01-03-2010' AND f.fecha <= '30-04-2010' AND a.rubro = 3
+                        GROUP BY c.nrocli, c.nyape
+                            HAVING count(f.nrofactura) > 3
+                            ORDER BY c.nrocli
+
+SELECT COUNT(DISTINCT f.nrofactura) FROM 
+                    facturas f 
+                    INNER JOIN detalles d ON f.nrofactura = d.nrofactura
+                    INNER JOIN articulos a ON  a.nroartic = d.articulo
+                        WHERE EXISTS(SELECT 1 FROM articulos WHERE a.rubro = 3);
+
+-- J) Listar Numero y nombre de los cliente. Además, listar la cantidad de facturas que tuvo
+--    durante Marzo y Abril del 2010 considerando SOLO las facturas en las que compro articulos
+--    del rubro 3, ordenado por numero de cliente. (Rsta: 7 filas)
+--
+
+SELECT c.nrocli, c.nyape, count(f.nrofactura)
+                    FROM clientes c INNER JOIN facturas f ON c.nrocli = f.cliente
+                        INNER JOIN detalles d ON f.nrofactura = d.nrofactura
+                        INNER JOIN articulos a ON d.articulo = a.nroartic
+                            WHERE EXISTS(SELECT 1 FROM detalles d WHERE  a.rubro = 3)
+                            AND f.fecha BETWEEN '01-03-2010' AND '30-04-2010'
+                                GROUP BY c.nrocli
+
+SELECT c.nrocli, c.nyape, count(f.nrofactura)
+                    FROM clientes c INNER JOIN facturas f ON c.nrocli = f.cliente
+                        INNER JOIN detalles d ON f.nrofactura = d.nrofactura
+                        INNER JOIN articulos a ON d.articulo = a.nroartic
+                            WHERE f.nrofactura IN (SELECT nrofactura FROM detalles d WHERE a.rubro = 3)
+                            AND f.fecha BETWEEN '01-03-2010' AND '30-04-2010'
+                                GROUP BY c.nrocli                              
+
+SELECT cliente, COUNT(*), c.nyape FROM facturas f, clientes c
+                    WHERE c.nrocli = f.cliente AND fecha BETWEEN '01-03-2010' AND '30-04-2010' GROUP BY cliente
+
+SELECT nrofactura FROM DETALLEs d, articulos a WHERE d.articulo = a.nroartic AND a.rubro = 3;			
+
+-- USANDO IN
+SELECT f.cliente, count(*), nyape
+    FROM facturas f, clientes c
+        WHERE fecha BETWEEN 
+            '01-03-2010' AND '30-04-2010'
+            AND c.nrocli = f.cliente
+            AND nrofactura IN (SELECT nrofactura FROM DETALLEs d, articulos a WHERE d.nrofactura = f.nrofactura AND d.articulo = a.nroartic AND a.rubro = 3)
+                GROUP BY f.cliente, nyape
+                    HAVING count(*) > 2
+                    AND count(*) < 5
+-- USANDO EXISTS
+SELECT f.cliente, count(*), nyape
+    FROM facturas f, clientes c
+        WHERE fecha BETWEEN 
+            '01-03-2010' AND '30-04-2010'
+            AND c.nrocli = f.cliente
+            AND EXISTS (SELECT nrofactura FROM DETALLEs d, articulos a WHERE d.nrofactura = f.nrofactura AND d.articulo = a.nroartic AND a.rubro = 3)
+                GROUP BY f.cliente, nyape
+                    HAVING count(*) > 2
+                    AND count(*) < 5
