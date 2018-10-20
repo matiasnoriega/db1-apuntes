@@ -49,13 +49,13 @@ SELECT f1.leg, f1.mat, f1. nota, f2.leg, f2.mat, f2.nota
         AND f2.nota >= 4
         ORDER BY f1.leg;
 
-SELECT f.* m.* FROM finales f, Materias m, Alumnos acciones
+SELECT f.*, m.* FROM finales f, Materias m, Alumnos acciones
     WHERE f.mat = m.mat
     AND f.leg = a.leg
     AND fec BETWEEN '2008-12-01' AND '2009-03-30';
 
-(Es lo mismo que el producto CARTESIANO)
-SELECT f.* m.* FROM finales f INNER JOIN Materias m ON f.mat = m.mat
+--(Es lo mismo que el producto CARTESIANO)
+SELECT f.*, m.* FROM finales f INNER JOIN Materias m ON f.mat = m.mat
     WHERE FEC BETWEEN '2008-12-01' AND '2009-03-30'
         ORDER BY f.leg;
 
