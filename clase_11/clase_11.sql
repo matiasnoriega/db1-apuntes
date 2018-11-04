@@ -67,20 +67,16 @@ error comun en la division ---> METER ATRIBUTOS DE MAS
 
 select id_carr, localidad from alumnos l
 	WHERE id_carr IS NOT NULL AND NOT EXISTS(SELECT id_carr FROM alumnos c 
-					 		WHERE id_carr IS NOT NULL AND NOT EXISTS(select localidad, id_carr FROM alumnos x
-											WHERE x.localidad = l.localidad
-											AND x.id_carr = c.id_carr))
+					 		                    WHERE id_carr IS NOT NULL AND NOT EXISTS(SELECT localidad, id_carr FROM alumnos x
+											                                                WHERE x.localidad = l.localidad
+											                                                AND x.id_carr = c.id_carr))
 
 -- PRACTICA 10/EJERCICIO T/a
 -- T) a) Listar los clientes compraron TODOS los articulos (1 fila - cliente 109)
 
 SELECT c.* FROM clientes c 
-        WHERE NOT EXISTS(SELECT nroartic FROM articulos a WHERE NOT EXISTS(
-            SELECT cliente, articulo 
-                FROM detalles d INNER JOIN facturas f ON d.nrofactura = f.nrofactura
-                    WHERE f.cliente = c.nrocli
-                    AND d.articulo = a.nroartic
-        ))
+        WHERE NOT EXISTS(SELECT nroartic FROM articulos a 
+                            WHERE NOT EXISTS(SELECT cliente, articulo FROM detalles d INNER JOIN facturas f ON d.nrofactura = f.nrofactura WHERE f.cliente = c.nrocli AND d.articulo = a.nroartic))
 
 -- RESPUESTA DISTINTA, MAS COMPLICADA
 
@@ -89,10 +85,7 @@ SELECT *
         WHERE (SELECT COUNT(*) FROM articulos)
         =
         (SELECT COUNT(*) FROM articulos
-            WHERE nroartic IN(SELECT fd.articulo
-                FROM facturas fc, detalles fd
-                    WHERE fc.nrofactura = fd.nrofactura
-                    AND fc.cliente = c.nrocli))
+            WHERE nroartic IN(SELECT fd.articulo FROM facturas fc, detalles fd WHERE fc.nrofactura = fd.nrofactura AND fc.cliente = c.nrocli))
 
 -- NOT IN / NOT EXISTS indispensable para restas, JOINS de tablas, GROUP BY y HAVING hacer el gropy by y del resultado hacer un having || ALGO ASOCIADO A LO DIAGRAMAS, ALGO ASOCIADO A ALGEBRA RELACIONAL Y ALGO RELACIONADO A SQL
 
